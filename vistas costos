@@ -1,0 +1,114 @@
+-- En esta vista aparecen los costos unitarios por industria y lo que valdrían para calcular el ponderado (Aunque no es necesaria para los siguientes querys, solo es para dar más información)
+create view cuembarques as 
+    select a.idempresa, b.idalmacen, a.idembarque, a.cantidad, a.precioTotal, a.precioTotal/a.cantidad as CUembarque, (a.precioTotal/a.cantidad)*(a.cantidad/b.cantTot) as CUponderado 
+    from embarque as a
+    join (select idempresa, idalmacen, sum(cantidad) as cantTot 
+          from embarque 
+          group by idempresa, idalmacen order by idempresa, idalmacen) as b on a.idempresa=b.idempresa 
+    where a.idalmacen = b.idalmacen order by idempresa, idalmacen, idembarque
+
+
+
+-- En esta vista ya tenemos calculados los costos ponderaros por almacen
+create view cualmacenes as 
+    select a.idempresa, c.idindustria, b.idalmacen, sum((a.precioTotal/a.cantidad)*(a.cantidad/b.cantTot)) as CUponderado 
+    from embarque as a
+    join (select idempresa, idalmacen, sum(cantidad) as cantTot 
+          from embarque 
+          group by idempresa, idalmacen order by idempresa, idalmacen) as b on a.idempresa=b.idempresa
+    join empresa as c on a.idempresa = c.idempresa
+    where a.idalmacen = b.idalmacen group by idempresa, idalmacen order by idempresa, idalmacen
+
+
+
+-- Esta vista es para facilitar las consultas de los puntos siguientes. Ya da los coeficientes que requiere cada empresa
+create view coeficiente as 
+    select idempresa, idindustria, idvendedora, coeficiente 
+    from empresa 
+    join encadenamiento on idindustria=idcompradora 
+    order by idempresa, idvendedora
+
+
+
+-- Cree una vista para cada costoTotal por almacén porque cuando trataba de hacer la suma directamente en un superquery me devolvía mal los valores.
+--No entiendo por que, porque era exactamente la misma operación, pero con las vistas por separado funciona
+create view cta as
+      select a.idempresa, a.idindustria, b.almacen, a.vendedora, a.coeficiente*b.CUponderado as totalA
+      from (select a.idempresa, a.idindustria, a.vendedora, b.coeficiente 
+            from (select idempresa, idindustria, min(idvendedora)as vendedora 
+                  from coeficiente 
+                  group by idempresa, idindustria) as a 
+            join coeficiente as b on a.idempresa = b.idempresa 
+            where a.vendedora = b.idvendedora) as a
+      join(select a.idempresa, a.idindustria, a.almacen, b.CUponderado 
+            from (select idempresa, idindustria, min(idalmacen)as almacen 
+                  from cualmacenes 
+                  group by idempresa, idindustria) as a 
+            join cualmacenes as b on a.idempresa = b.idempresa 
+            where a.almacen = b.idalmacen) as b on a.idempresa = b.idempresa
+
+
+create view ctb as
+      select a.idempresa, a.idindustria, b.almacen, a.vendedora, a.coeficiente*b.CUponderado as totalB
+      from (select a.idempresa, a.idindustria, a.vendedora, b.coeficiente 
+            from (select idempresa, idindustria, max(idvendedora)as vendedora 
+                  from coeficiente 
+                  group by idempresa, idindustria) as a 
+            join coeficiente as b on a.idempresa = b.idempresa 
+            where a.vendedora = b.idvendedora) as a
+      join(select a.idempresa, a.idindustria, a.almacen, b.CUponderado 
+            from (select idempresa, idindustria, max(idalmacen)as almacen 
+                  from cualmacenes 
+                  group by idempresa, idindustria) as a 
+            join cualmacenes as b on a.idempresa = b.idempresa 
+            where a.almacen = b.idalmacen) as b on a.idempresa = b.idempresa
+
+
+
+-- Esta vista nos muestra todas las empresas, con la industria a la que pertenecen y sus costos totales
+create view costosTotales as 
+      select a.idempresa, b.idindustria, totalA+totalB as costoTotal 
+      from cta as a 
+      join ctb as b on a.idempresa = b.idempresa
+
+
+
+--a.	Escribe sentencias SQL para calcular el costo unitario por embarque dividiendo precioTotal / cantidad.
+
+
+select idempresa, idalmacen, idembarque, cantidad, precioTotal, precioTotal/cantidad as CUembarque
+    from embarque 
+    where idempresa = XX
+
+
+--b.	Utiliza todos los embarques del mismo insumo para calcular el costo unitario por almacén.
+
+
+select * from cualmacenes
+  where idempresa = XX
+
+
+--c.	En la tabla empresa busca tu idempresa para saber en qué industria estás. Con la tabla encadenamiento encuentra el coeficiente de cada insumo que necesitas buscando tu idindustria en el campo idcompradora, el idvendedora menor corresponde al insumo1 y el mayor al insumo2.
+
+select * from coeficiente
+  where idempresa = XX
+
+--d.	Escribe sentencias SQL para multiplicar el coeficiente de cada insumo que necesites por tu costo unitario por almacén y súmalos para encontrar tu costo total.
+
+select * from costosTotales
+  where idempresa = XX
+
+--e.	Escribe sentencias SQL para ordenar tus posibles proveedores de menor a mayor costo total. 
+
+select idempresa, idindustria, costoTotal 
+  from costosTotales 
+  where idindustria in (select idvendedora from coeficiente where idempresa = XX) 
+  order by idindustria, costoTotal
+
+--f.	Escribe sentencias SQL para saber cuántos de tus competidores tienen un menor costo total que el tuyo.
+
+select idempresa, idindustria, costoTotal 
+  from costosTotales 
+  where (idindustria in (select idindustria from coeficiente where idempresa = XX)) 
+  and costoTotal < (select costoTotal from costosTotales where idempresa = XX)
+  order by idindustria, costoTotal
