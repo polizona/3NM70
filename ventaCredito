@@ -1,0 +1,13 @@
+CREATE DEFINER=`polizona_XX`@`localhost` PROCEDURE `ventaCredito`(in e int, in m int, in n int)
+BEGIN
+  DECLARE conta INT;
+  DECLARE contados INT;
+  DECLARE contatres INT;
+  SET conta = (Select count(*) from asiento WHERE idoperacion = 4) + 1;
+  SET contados = (Select count(*) from abono) + 1;
+  SET contatres = (Select count(*) from cargo) + 1;
+     insert into asiento values (e,conta,now(),4,m+n);
+     insert into cargo values (e,conta,contatres,9,m+n);
+     insert into abono values (e,conta,contados,8,m);
+     insert into abono values (e,conta,contados+1,11,n);
+    END
