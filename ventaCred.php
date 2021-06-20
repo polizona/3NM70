@@ -13,7 +13,7 @@
         if ($conexion) {
             $idEmpresa= $_POST ['idEmpresa'];
             $costoPro= $_POST ['costoPro'];
-			$ganancia= $_POST ['ganancia'];
+	    $ganancia= $_POST ['ganancia'];
             
             //Bloquear registros vacios
             if ($_POST["idEmpresa"]!==""){
