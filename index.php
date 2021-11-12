@@ -1,17 +1,15 @@
-
 <!DOCTYPE html>
 <html>
 	<head>
 		<meta charset="utf-8">
-		<title> Ciclo del dinero </title>
+		<title> conjuntas </title>
 	</head> 
 <body>
 <div class="container">
 <div class="row align-items-center">
 <div class="col-12 align-self-center text-center p-4">
-<h1>Asientos Contables</h1>
-<h2>Huitron Rodriguez Rafael Moises </h2>
-<h2>3NM70 Ing. Conocimiento </h2>								
+<h1>conjuntas</h1>
+								
 <br>
 		
 <label for="opciones"> Selecciona el proceso a realizar: </label>
@@ -19,7 +17,7 @@
 			<option value="A"> Registro de Embarque </option>
 			<option value="B"> Orden de Trabajo </option>
 			<option value="C"> Finaliza Produccion </option>
-			<option value="D"> Venta a credito </option>
+			<option value="D"> Conjuntas</option>
 			<option value="E"> Cobro a credito </option>
 		</select><br><br>
 		
@@ -46,8 +44,8 @@ function establecerClima() {
 	div.innerHTML = '<form action="finProd.php" method="post"><fieldset><legend> Ingrese datos solicitados</legend><p><label>Numero de Empresa: <input type="int" name="idEmpresa" /></label></p><p><label>Total Productos Terminados: <input type="int" name="totProd" /></label></p><p><input type="submit" value="enviar"/></p></fieldset></form>';
     div.innerHTML;
   } else if (eleccion === 'D') {
-    parrafo.textContent = 'Inserte el costo del producto y la utilidad a obtener.';
-	div.innerHTML = '<form action="ventaCred.php" method="post"><fieldset><legend> Ingrese datos solicitados</legend><p><label>Número de Empresa:<input type="int" name="idEmpresa" /></label> </p><p><label>Costo del Producto: <input type="double" name="costoPro" /></label></p><p><label>Utilidad del producto: <input type="double" name="ganancia" /></label></p><p><input type="submit" value="enviar"/></p></fieldset></form>';
+    parrafo.textContent = 'tabla campo1 y campo2.';
+	div.innerHTML = '<form action="conjuntas.php" method="post"><fieldset><legend> Ingrese datos solicitados</legend><p><label>tabla:<input type="text" name="tabla" /></label> </p><p><label>campo1: <input type="text" name="campo1" /></label></p><p><label>campo2: <input type="texto" name="campo2" /></label></p><p><input type="submit" value="enviar"/></p></fieldset></form>';
     div.innerHTML;
   } else if (eleccion === 'E') {
     parrafo.textContent = 'Inserte la mercancia que se desea comprar .';
