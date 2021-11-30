@@ -1,0 +1,13 @@
+CREATE DEFINER=`polizona_91`@`localhost` PROCEDURE `ordTrabajo`(in e int, in m int, in n int)
+BEGIN
+  DECLARE conta INT;
+  DECLARE contados INT;
+  DECLARE contatres INT;
+  SET conta = (Select count(*) from asiento ) + 1;
+  SET contados = (Select count(*) from abono) + 1;
+  SET contatres = (Select count(*) from cargo) + 1;
+     insert into asiento values (91,conta,now(),6,m+n);
+     insert into cargo values (91,conta,contatres,7,m+n);
+     insert into abono values (91,conta,contados,4,m);
+     insert into abono values (91,conta,contados+1,5,n);
+    END
