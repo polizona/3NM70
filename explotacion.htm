@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head><title> Redes bayesianas</title></head> 
+<body>
+      <h1>Explotación de una red bayesiana</h1>
+      <br>
+
+<form action="conjuntas.php" method="post">
+<fieldset><legend> Ingrese datos</legend>
+<p><label>tabla <input type="text" name="tabla" /></label></p>
+<p><label>campo1 <input type="text" name="campo1" /></label></p>
+<p><label>campo2 <input type="text" name="campo2" /></label></p>
+<input type="submit" value="enviar"/></p>
+</fieldset>
+</form>
+<br>
+
+<fieldset>
+  <legend>¿qué probabilidad quieres?</legend>
+      <label for="conjunta">conjunta</label>
+      <input type="radio" id="conjunta" name="proba" value="conjunta" checked>
+      <label for="bayesiana">bayesiana</label>
+      <input type="radio" id="bayesiana" name="proba" value="bayesiana">
+      <label for="condicional">condicional</label>
+      <input type="radio" id="condicional" name="proba" value="condicional">
+</fieldset>
+
+</body>
+</html>
